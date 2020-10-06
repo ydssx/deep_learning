@@ -65,6 +65,15 @@ def softmax(x):
 
 
 def mean_squared_error(y, t):
+    """损失函数均方误差
+
+    Args:
+        y (array): 神经网络的输出
+        t (array): 监督数据
+
+    Returns:
+        [type]: [description]
+    """
     return 0.5 * np.sum((y - t)**2)
 
 
