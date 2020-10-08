@@ -39,7 +39,7 @@ class Sigmoid:
 
 class Affine:
     def __init__(self, W, b):
-        self.W =W
+        self.W = W
         self.b = b
 
         self.x = None
@@ -70,8 +70,8 @@ class Affine:
 class SoftmaxWithLoss:
     def __init__(self):
         self.loss = None
-        self.y = None # softmax的输出
-        self.t = None # 监督数据
+        self.y = None  # softmax的输出
+        self.t = None  # 监督数据
 
     def forward(self, x, t):
         self.t = t
@@ -82,7 +82,7 @@ class SoftmaxWithLoss:
 
     def backward(self, dout=1):
         batch_size = self.t.shape[0]
-        if self.t.size == self.y.size: # 监督数据是one-hot-vector的情况
+        if self.t.size == self.y.size:  # 监督数据是one-hot-vector的情况
             dx = (self.y - self.t) / batch_size
         else:
             dx = self.y.copy()
@@ -115,11 +115,16 @@ class BatchNormalization:
     """
     http://arxiv.org/abs/1502.03167
     """
-    def __init__(self, gamma, beta, momentum=0.9, running_mean=None, running_var=None):
+    def __init__(self,
+                 gamma,
+                 beta,
+                 momentum=0.9,
+                 running_mean=None,
+                 running_var=None):
         self.gamma = gamma
         self.beta = beta
         self.momentum = momentum
-        self.input_shape = None # Conv层的情况下为4维，全连接层的情况下为2维
+        self.input_shape = None  # Conv层的情况下为4维，全连接层的情况下为2维
 
         # 测试时使用的平均值和方差
         self.running_mean = running_mean
@@ -159,8 +164,10 @@ class BatchNormalization:
             self.xc = xc
             self.xn = xn
             self.std = std
-            self.running_mean = self.momentum * self.running_mean + (1-self.momentum) * mu
-            self.running_var = self.momentum * self.running_var + (1-self.momentum) * var
+            self.running_mean = self.momentum * self.running_mean + (
+                1 - self.momentum) * mu
+            self.running_var = self.momentum * self.running_var + (
+                1 - self.momentum) * var
         else:
             xc = x - self.running_mean
             xn = xc / ((np.sqrt(self.running_var + 10e-7)))
@@ -214,8 +221,8 @@ class Convolution:
     def forward(self, x):
         FN, C, FH, FW = self.W.shape
         N, C, H, W = x.shape
-        out_h = 1 + int((H + 2*self.pad - FH) / self.stride)
-        out_w = 1 + int((W + 2*self.pad - FW) / self.stride)
+        out_h = 1 + int((H + 2 * self.pad - FH) / self.stride)
+        out_w = 1 + int((W + 2 * self.pad - FW) / self.stride)
 
         col = im2col(x, FH, FW, self.stride, self.pad)
         col_W = self.W.reshape(FN, -1).T
@@ -231,7 +238,7 @@ class Convolution:
 
     def backward(self, dout):
         FN, C, FH, FW = self.W.shape
-        dout = dout.transpose(0,2,3,1).reshape(-1, FN)
+        dout = dout.transpose(0, 2, 3, 1).reshape(-1, FN)
 
         self.db = np.sum(dout, axis=0)
         self.dW = np.dot(self.col.T, dout)
@@ -259,7 +266,7 @@ class Pooling:
         out_w = int(1 + (W - self.pool_w) / self.stride)
 
         col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
-        col = col.reshape(-1, self.pool_h*self.pool_w)
+        col = col.reshape(-1, self.pool_h * self.pool_w)
 
         arg_max = np.argmax(col, axis=1)
         out = np.max(col, axis=1)
@@ -275,10 +282,12 @@ class Pooling:
 
         pool_size = self.pool_h * self.pool_w
         dmax = np.zeros((dout.size, pool_size))
-        dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()
-        dmax = dmax.reshape(dout.shape + (pool_size,))
+        dmax[np.arange(self.arg_max.size),
+             self.arg_max.flatten()] = dout.flatten()
+        dmax = dmax.reshape(dout.shape + (pool_size, ))
 
         dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
-        dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
+        dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride,
+                    self.pad)
 
         return dx
