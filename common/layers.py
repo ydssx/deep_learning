@@ -6,6 +6,8 @@ from .util import im2col, col2im
 
 class Relu:
     def __init__(self):
+        """mask是由True/False构成的numpy数组，它会把正向传播时的输入x的元素中小于等于0的地方保存为True，大于0的元素保存为False
+        """
         self.mask = None
 
     def forward(self, x):
