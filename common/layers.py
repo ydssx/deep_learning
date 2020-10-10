@@ -1,7 +1,12 @@
 # coding: utf-8
+import os
+import sys
+
 import numpy as np
+
+sys.path.append(os.pardir)
 from .functions import *
-from .util import im2col, col2im
+from .util import col2im, im2col
 
 
 class Relu:
@@ -25,6 +30,8 @@ class Relu:
 
 
 class Sigmoid:
+    """Sigmoid层的实现
+    """
     def __init__(self):
         self.out = None
 
@@ -40,6 +47,8 @@ class Sigmoid:
 
 
 class Affine:
+    """进行矩阵的乘积运算的层
+    """
     def __init__(self, W, b):
         self.W = W
         self.b = b
