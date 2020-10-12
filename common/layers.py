@@ -214,7 +214,17 @@ class BatchNormalization:
 
 
 class Convolution:
+    """卷积层
+    """
     def __init__(self, W, b, stride=1, pad=0):
+        """[summary]
+
+        Args:
+            W ([type]): [description]
+            b ([type]): [description]
+            stride (int, optional): 步幅. Defaults to 1.
+            pad (int, optional): 填充幅度. Defaults to 0.
+        """
         self.W = W
         self.b = b
         self.stride = stride
@@ -262,6 +272,8 @@ class Convolution:
 
 
 class Pooling:
+    """池化层
+    """
     def __init__(self, pool_h, pool_w, stride=1, pad=0):
         self.pool_h = pool_h
         self.pool_w = pool_w
