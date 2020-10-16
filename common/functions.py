@@ -53,7 +53,7 @@ def softmax(x):
     Returns:
         array: 输出
     """
-    #当输入多个样本时，
+    # 当输入多个样本时，
     if x.ndim == 2:
         x = x.T
         x = x - np.max(x, axis=0)
